@@ -7,8 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreatePatientDto } from './dto/create-patient.dto';
-import { UpdatePatientDto } from './dto/update-patient.dto';
+import { CreatePatientDto, UpdatePatientDto } from './dto';
 import { PatientsService } from './patients.service';
 import { Patient } from './schemas/patient.schema';
 
