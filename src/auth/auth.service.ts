@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { LoginDto, RegisterDto } from './dto';
+import { Role } from './enums/role';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -24,7 +25,7 @@ export class AuthService {
 
     const user = await newUser.save();
 
-    return this.createToken(user.email);
+    return this.createToken(user.email, user.role);
   }
 
   async login(dto: LoginDto) {
@@ -39,10 +40,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    return this.createToken(user.email);
+    return this.createToken(user.email, user.role);
   }
 
-  async createToken(email: string) {
-    return this.jwtService.signAsync({ email });
+  async createToken(email: string, role: Role) {
+    return this.jwtService.signAsync({ email, role });
   }
 }
