@@ -1,0 +1,17 @@
+export enum Specialty {
+  CARDIOLOGY = 'Cardiology',
+  NEUROLOGY = 'Neurology',
+  ORTHOPEDICS = 'Orthopedics',
+  PEDIATRICS = 'Pediatrics',
+  DERMATOLOGY = 'Dermatology',
+  GASTROENTEROLOGY = 'Gastroenterology',
+  ONCOLOGY = 'Oncology',
+  GYNECOLOGY = 'Gynecology',
+  UROLOGY = 'Urology',
+  OPHTHALMOLOGY = 'Ophthalmology',
+  PSYCHIATRY = 'Psychiatry',
+  ENDOCRINOLOGY = 'Endocrinology',
+  HEMATOLOGY = 'Hematology',
+  NEPHROLOGY = 'Nephrology',
+  PULMONOLOGY = 'Pulmonology',
+}
