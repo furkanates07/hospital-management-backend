@@ -10,6 +10,6 @@ import { Patient, PatientSchema } from './schemas/patient.schema';
   ],
   controllers: [PatientsController],
   providers: [PatientsService],
-  exports: [PatientsService],
+  exports: [PatientsService, MongooseModule],
 })
 export class PatientsModule {}
