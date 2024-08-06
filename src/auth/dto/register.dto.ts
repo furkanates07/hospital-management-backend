@@ -1,16 +1,20 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Role } from '../enums/role';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '../../users/enums/role';
 
 export class RegisterDto {
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   password: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsEnum(Role)
   role: Role;
 }
