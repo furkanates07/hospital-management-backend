@@ -1,22 +1,9 @@
-import {
-  IsArray,
-  IsDate,
-  IsEmail,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { EmergencyContact } from '../schemas/emergency-contact.schema';
 
 export class UpdatePatientDto {
   @IsOptional()
-  @IsString()
-  name?: string;
-
-  @IsOptional()
-  @IsEmail()
-  email?: string;
-
-  @IsOptional()
-  @IsString()
+  @IsPhoneNumber()
   phoneNumber?: string;
 
   @IsOptional()
@@ -32,20 +19,17 @@ export class UpdatePatientDto {
   address?: string;
 
   @IsOptional()
-  emergencyContact?: {
-    name: string;
-    phoneNumber: string;
-  };
+  emergencyContact?: EmergencyContact;
 
   @IsOptional()
-  @IsArray()
+  @IsString({ each: true })
   medicalHistory?: string[];
 
   @IsOptional()
-  @IsArray()
+  @IsString({ each: true })
   allergies?: string[];
 
   @IsOptional()
-  @IsArray()
+  @IsString({ each: true })
   chronicConditions?: string[];
 }

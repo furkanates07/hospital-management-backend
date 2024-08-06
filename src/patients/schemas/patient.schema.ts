@@ -1,14 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { EmergencyContact } from './emergency-contact.schema';
 
 @Schema()
-export class Patient {
-  @Prop({ required: true })
-  name: string;
-
-  @Prop({ required: true })
-  email: string;
+export class Patient extends Document {
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  userId: string;
 
   @Prop({ required: true })
   phoneNumber: string;
@@ -35,5 +32,5 @@ export class Patient {
   chronicConditions: string[];
 }
 
-export type PatientDocument = Patient & Document;
 export const PatientSchema = SchemaFactory.createForClass(Patient);
+export type PatientDocument = Patient & Document;

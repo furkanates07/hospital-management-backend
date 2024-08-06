@@ -1,52 +1,33 @@
-import {
-  IsArray,
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { EmergencyContact } from '../schemas/emergency-contact.schema';
 
 export class CreatePatientDto {
-  @IsString()
   @IsNotEmpty()
-  name: string;
+  userId: string;
 
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  @IsPhoneNumber()
+  phoneNumber: string;
 
-  @IsOptional()
-  @IsString()
-  phoneNumber?: string;
-
-  @IsOptional()
   @IsDate()
-  dateOfBirth?: Date;
+  dateOfBirth: Date;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  gender?: string;
+  gender: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  address?: string;
+  address: string;
 
-  @IsOptional()
-  emergencyContact?: {
-    name: string;
-    phoneNumber: string;
-  };
+  @IsNotEmpty()
+  emergencyContact: EmergencyContact;
 
-  @IsOptional()
-  @IsArray()
-  medicalHistory?: string[];
+  @IsString({ each: true })
+  medicalHistory: string[];
 
-  @IsOptional()
-  @IsArray()
-  allergies?: string[];
+  @IsString({ each: true })
+  allergies: string[];
 
-  @IsOptional()
-  @IsArray()
-  chronicConditions?: string[];
+  @IsString({ each: true })
+  chronicConditions: string[];
 }

@@ -7,7 +7,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreatePatientDto, UpdatePatientDto } from './dto';
+import { CreatePatientDto } from './dto/create-patient.dto';
+import { UpdatePatientDto } from './dto/update-patient.dto';
 import { PatientsService } from './patients.service';
 import { Patient } from './schemas/patient.schema';
 
@@ -16,30 +17,30 @@ export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   @Post()
-  create(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
-    return this.patientsService.createPatient(createPatientDto);
-  }
-
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updatePatientDto: UpdatePatientDto,
-  ): Promise<Patient> {
-    return this.patientsService.updatePatient(id, updatePatientDto);
+  async create(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
+    return this.patientsService.create(createPatientDto);
   }
 
   @Get()
-  findAll(): Promise<Patient[]> {
-    return this.patientsService.findAllPatients();
+  async findAll(): Promise<Patient[]> {
+    return this.patientsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Patient> {
-    return this.patientsService.findPatientById(id);
+  async findById(@Param('id') id: string): Promise<Patient> {
+    return this.patientsService.findById(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updatePatientDto: UpdatePatientDto,
+  ): Promise<Patient> {
+    return this.patientsService.update(id, updatePatientDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<Patient> {
-    return this.patientsService.deletePatient(id);
+  async remove(@Param('id') id: string): Promise<Patient> {
+    return this.patientsService.remove(id);
   }
 }
