@@ -8,8 +8,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Role } from 'src/auth/enums/role';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Role } from '../users/enums/role';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { Appointment } from './schemas/appointment.schema';

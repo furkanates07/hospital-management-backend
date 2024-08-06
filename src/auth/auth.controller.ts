@@ -1,11 +1,19 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { DoctorsService } from 'src/doctors/doctors.service';
 import { CreateDoctorDto } from 'src/doctors/dto';
 import { CreatePatientDto } from 'src/patients/dto';
 import { PatientsService } from 'src/patients/patients.service';
+import { Role } from '../users/enums/role';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto';
-import { Role } from './enums/role';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
@@ -17,7 +25,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  register(@Body() dto: RegisterDto) {
+  async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
@@ -28,10 +36,14 @@ export class AuthController {
     @Req() req: any,
   ) {
     const user = req.user;
-    if (user.role !== Role.DOCTOR) {
-      throw new Error('Only doctors can register patients');
+
+    if (user.role !== Role.DOCTOR && user.role !== Role.ADMIN) {
+      throw new HttpException(
+        'Only doctors and admins can register patients',
+        HttpStatus.FORBIDDEN,
+      );
     }
-    return this.patientsService.createPatient(createPatientDto);
+    return this.patientsService.create(createPatientDto);
   }
 
   @Post('register-doctor')
@@ -42,13 +54,17 @@ export class AuthController {
   ) {
     const user = req.user;
     if (user.role !== Role.ADMIN) {
-      throw new Error('Only admins can register doctors');
+      throw new HttpException(
+        'Only admins can register doctors',
+        HttpStatus.FORBIDDEN,
+      );
     }
-    return this.doctorsService.createDoctor(createDoctorDto);
+
+    return this.doctorsService.create(createDoctorDto);
   }
 
   @Post('login')
-  login(@Body() dto: LoginDto) {
+  async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 }
