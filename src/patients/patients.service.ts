@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreatePatientDto } from './dto/create-patient.dto';
-import { UpdatePatientDto } from './dto/update-patient.dto';
+import { CreatePatientDto, UpdatePatientDto } from './dto';
 import { Patient, PatientDocument } from './schemas/patient.schema';
-
 @Injectable()
 export class PatientsService {
   constructor(
@@ -49,5 +47,13 @@ export class PatientsService {
       throw new NotFoundException(`Patient with ID ${id} not found`);
     }
     return deletedPatient;
+  }
+
+  async findPatientIdByEmail(userId: string): Promise<string | null> {
+    const patient = await this.patientModel
+      .findOne({ userId })
+      .select('_id')
+      .exec();
+    return patient ? patient._id.toString() : null;
   }
 }

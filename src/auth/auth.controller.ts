@@ -1,20 +1,10 @@
-import {
-  Body,
-  Controller,
-  HttpException,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { DoctorsService } from 'src/doctors/doctors.service';
 import { CreateDoctorDto } from 'src/doctors/dto';
 import { CreatePatientDto } from 'src/patients/dto';
 import { PatientsService } from 'src/patients/patients.service';
-import { Role } from '../users/enums/role';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,43 +14,14 @@ export class AuthController {
     private doctorsService: DoctorsService,
   ) {}
 
-  @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  @Post('patient-register')
+  async register(@Body() dto: CreatePatientDto) {
+    return this.patientsService.create(dto);
   }
 
-  @Post('register-patient')
-  @UseGuards(JwtAuthGuard)
-  async registerPatient(
-    @Body() createPatientDto: CreatePatientDto,
-    @Req() req: any,
-  ) {
-    const user = req.user;
-
-    if (user.role !== Role.DOCTOR && user.role !== Role.ADMIN) {
-      throw new HttpException(
-        'Only doctors and admins can register patients',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-    return this.patientsService.create(createPatientDto);
-  }
-
-  @Post('register-doctor')
-  @UseGuards(JwtAuthGuard)
-  async registerDoctor(
-    @Body() createDoctorDto: CreateDoctorDto,
-    @Req() req: any,
-  ) {
-    const user = req.user;
-    if (user.role !== Role.ADMIN) {
-      throw new HttpException(
-        'Only admins can register doctors',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    return this.doctorsService.create(createDoctorDto);
+  @Post('doctor-register')
+  async registerDoctor(@Body() dto: CreateDoctorDto) {
+    return this.doctorsService.create(dto);
   }
 
   @Post('login')

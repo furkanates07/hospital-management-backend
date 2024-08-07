@@ -1,19 +1,35 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import { Role } from '../../users/enums/role';
 import { Specialty, Title } from '../enums';
 
 export class CreateDoctorDto {
   @IsNotEmpty()
-  userId: string;
+  @IsString()
+  name: string;
 
   @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
   @IsEnum(Specialty)
   specialty: Specialty;
 
-  @IsNotEmpty()
   @IsEnum(Title)
   title: Title;
 
-  @IsNotEmpty()
   @IsNumber()
   yearsOfExperience: number;
+
+  @IsEnum(Role)
+  role: Role = Role.PATIENT;
 }

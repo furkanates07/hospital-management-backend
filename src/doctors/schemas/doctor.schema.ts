@@ -1,11 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
+import { Role } from '../../users/enums/role';
 import { Specialty, Title } from '../enums';
 
 @Schema()
 export class Doctor extends Document {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  userId: string;
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true, unique: true })
+  email: string;
+
+  @Prop({ required: true })
+  password: string;
+
+  @Prop({ type: String, enum: Role, default: Role.DOCTOR })
+  role: Role;
 
   @Prop({ required: true })
   specialty: Specialty;

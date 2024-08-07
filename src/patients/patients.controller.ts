@@ -43,4 +43,11 @@ export class PatientsController {
   async remove(@Param('id') id: string): Promise<Patient> {
     return this.patientsService.remove(id);
   }
+
+  @Get('id-by-userId/:userId')
+  async getPatientIdByEmail(
+    @Param('userId') userId: string,
+  ): Promise<string | null> {
+    return this.patientsService.findPatientIdByEmail(userId);
+  }
 }

@@ -1,6 +1,6 @@
 export enum Title {
-  PROFESSOR = 'Professor',
-  ASSOCIATE_PROFESSOR = 'Associate Professor',
-  ASSISTANT_PROFESSOR = 'Assistant Professor',
-  DOCTOR = 'Doctor',
+  PROFESSOR = 'Prof.',
+  ASSOCIATE_PROFESSOR = 'Assoc. Prof.',
+  ASSISTANT_PROFESSOR = 'Asst. Prof.',
+  DOCTOR = 'Dr.',
 }

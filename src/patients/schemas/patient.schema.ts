@@ -1,35 +1,45 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-import { EmergencyContact } from './emergency-contact.schema';
+import { Document } from 'mongoose';
+import { Role } from '../../users/enums/role';
+import { EmergencyContact } from '../schemas/emergency-contact.schema';
 
 @Schema()
 export class Patient extends Document {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  userId: string;
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true, unique: true })
+  email: string;
 
   @Prop({ required: true })
-  phoneNumber: string;
+  password: string;
 
-  @Prop({ required: true })
-  dateOfBirth: Date;
+  @Prop({ type: String, enum: Role, default: Role.PATIENT })
+  role: Role;
 
-  @Prop({ required: true })
-  gender: string;
+  @Prop({ required: false })
+  phoneNumber?: string;
 
-  @Prop({ required: true })
-  address: string;
+  @Prop({ required: false })
+  dateOfBirth?: Date;
 
-  @Prop({ type: EmergencyContact, required: true })
-  emergencyContact: EmergencyContact;
+  @Prop({ required: false })
+  gender?: string;
 
-  @Prop({ type: [String] })
-  medicalHistory: string[];
+  @Prop({ required: false })
+  address?: string;
 
-  @Prop({ type: [String] })
-  allergies: string[];
+  @Prop({ type: EmergencyContact, required: false })
+  emergencyContact?: EmergencyContact;
 
-  @Prop({ type: [String] })
-  chronicConditions: string[];
+  @Prop({ type: [String], required: false })
+  medicalHistory?: string[];
+
+  @Prop({ type: [String], required: false })
+  allergies?: string[];
+
+  @Prop({ type: [String], required: false })
+  chronicConditions?: string[];
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

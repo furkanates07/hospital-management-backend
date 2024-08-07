@@ -2,26 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../users/schemas/user.schema';
-import { LoginDto, RegisterDto } from './dto';
+import { Doctor, DoctorDocument } from 'src/doctors/schemas/doctor.schema';
+import { Patient, PatientDocument } from 'src/patients/schemas/patient.schema';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Patient.name) private patientModel: Model<PatientDocument>,
+    @InjectModel(Doctor.name) private doctorModel: Model<DoctorDocument>,
     private jwtService: JwtService,
   ) {}
 
-  async register(dto: RegisterDto): Promise<User> {
-    const newUser = new this.userModel(dto);
-    return newUser.save();
-  }
+  async login(dto: LoginDto): Promise<{ access_token: string }> {
+    let user = await this.patientModel.findOne({ email: dto.email });
 
-  async login(dto: LoginDto) {
-    const user = await this.userModel.findOne({ email: dto.email });
+    if (!user) {
+      user = await this.doctorModel.findOne({ email: dto.email });
+    }
+
     if (!user || user.password !== dto.password) {
       throw new Error('Invalid credentials');
     }
+
     const payload = { email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
