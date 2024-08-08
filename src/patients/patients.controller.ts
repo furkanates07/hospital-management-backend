@@ -1,14 +1,23 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { CreatePatientDto } from './dto/create-patient.dto';
-import { UpdatePatientDto } from './dto/update-patient.dto';
+import { Role } from 'src/users/enums/role';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  CreatePatientDto,
+  UpdatePatientConditionsDto,
+  UpdatePatientDetailsDto,
+} from './dto';
 import { PatientsService } from './patients.service';
 import { Patient } from './schemas/patient.schema';
 
@@ -32,22 +41,43 @@ export class PatientsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
-    @Body() updatePatientDto: UpdatePatientDto,
+    @Body() updatePatientDto: UpdatePatientDetailsDto,
+    @Req() req: any,
   ): Promise<Patient> {
-    return this.patientsService.update(id, updatePatientDto);
+    const patient = await this.patientsService.findById(id);
+
+    if (patient.email !== req.user.email) {
+      throw new BadRequestException(
+        "You are not authorized to update this patient's details",
+      );
+    }
+
+    return this.patientsService.updateDetails(id, updatePatientDto);
+  }
+
+  @Patch(':patientId/conditions')
+  @UseGuards(JwtAuthGuard)
+  async updatePatientConditions(
+    @Param('patientId') patientId: string,
+    @Body() updatePatientConditionsDto: UpdatePatientConditionsDto,
+    @Req() req: any,
+  ) {
+    if (req.user.role !== Role.DOCTOR) {
+      throw new BadRequestException(
+        'Only doctors can update patient conditions',
+      );
+    }
+    return this.patientsService.updatePatientConditions(
+      patientId,
+      updatePatientConditionsDto,
+    );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Patient> {
     return this.patientsService.remove(id);
-  }
-
-  @Get('id-by-userId/:userId')
-  async getPatientIdByEmail(
-    @Param('userId') userId: string,
-  ): Promise<string | null> {
-    return this.patientsService.findPatientIdByEmail(userId);
   }
 }

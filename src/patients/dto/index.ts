@@ -1,2 +1,3 @@
 export { CreatePatientDto } from './create-patient.dto';
-export { UpdatePatientDto } from './update-patient.dto';
+export { UpdatePatientConditionsDto } from './update-patient-conditions.dto';
+export { UpdatePatientDetailsDto } from './update-patient-details.dto';
