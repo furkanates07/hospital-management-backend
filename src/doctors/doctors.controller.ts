@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,7 +7,10 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DoctorsService } from './doctors.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
@@ -32,10 +36,20 @@ export class DoctorsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateDoctorDto: UpdateDoctorDto,
+    @Req() req: any,
   ): Promise<Doctor> {
+    const doctor = await this.doctorsService.findById(id);
+
+    if (doctor.email !== req.user.email) {
+      throw new BadRequestException(
+        "You are not authorized to update this doctor's details",
+      );
+    }
+
     return this.doctorsService.update(id, updateDoctorDto);
   }
 
