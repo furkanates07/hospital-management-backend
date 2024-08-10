@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Role } from 'src/users/enums/role';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DoctorsService } from './doctors.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -21,7 +22,14 @@ export class DoctorsController {
   constructor(private readonly doctorsService: DoctorsService) {}
 
   @Post()
-  async create(@Body() createDoctorDto: CreateDoctorDto): Promise<Doctor> {
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Body() createDoctorDto: CreateDoctorDto,
+    @Req() req: any,
+  ): Promise<Doctor> {
+    if (req.user.role !== Role.ADMIN) {
+      throw new BadRequestException('Only admins can create doctors.');
+    }
     return this.doctorsService.create(createDoctorDto);
   }
 
@@ -54,7 +62,11 @@ export class DoctorsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Doctor> {
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('id') id: string, @Req() req: any): Promise<Doctor> {
+    if (req.user.role !== Role.ADMIN) {
+      throw new BadRequestException('Only admins can delete doctors.');
+    }
     return this.doctorsService.remove(id);
   }
 }
