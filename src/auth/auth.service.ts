@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -21,8 +21,12 @@ export class AuthService {
       user = await this.doctorModel.findOne({ email: dto.email });
     }
 
-    if (!user || user.password !== dto.password) {
-      throw new Error('Invalid credentials');
+    if (!user) {
+      throw new UnauthorizedException('No user found with this email.');
+    }
+
+    if (user.password !== dto.password) {
+      throw new UnauthorizedException('Incorrect password.');
     }
 
     const payload = { email: user.email, role: user.role };
