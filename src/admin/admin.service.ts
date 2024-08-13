@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -20,8 +20,11 @@ export class AdminService {
 
   async login(dto: LoginAdminDto): Promise<{ access_token: string }> {
     const admin = await this.adminModel.findOne({ email: dto.email });
-    if (!admin || admin.password !== dto.password) {
-      throw new Error('Invalid credentials');
+    if (!admin) {
+      throw new UnauthorizedException('No admin found with this email.');
+    }
+    if (admin.password !== dto.password) {
+      throw new UnauthorizedException('Incorrect password.');
     }
     const payload = { email: admin.email, role: admin.role };
     const token = this.jwtService.sign(payload);
