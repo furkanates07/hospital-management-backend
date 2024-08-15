@@ -1,73 +1,162 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Hospital Managament Systems
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a hospital management system developed using NestJS. It provides various functionalities for doctors, patients, appointments, and administrators, with security ensured through JWT-based authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+### Admin
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Register**: Create a new admin account.
+- **Login**: Authenticate an admin and receive a JWT token.
+
+### Doctor
+
+- **Register**: Create a new doctor account (requires admin privileges).
+- **List**: Retrieve a list of all doctors.
+- **View**: Retrieve details of a specific doctor by ID.
+- **Update**: Modify doctor details (can only be updated by admin or the doctor themselves).
+- **Delete**: Remove a doctor from the system (requires admin privileges).
+
+### Patient
+
+- **Register**: Create a new patient account.
+- **List**: Retrieve a list of all patients.
+- **View**: Retrieve details of a specific patient by ID.
+- **Update**: Modify patient details (can only be updated by the patient themselves or a doctor).
+- **Update Conditions**: Modify patient conditions (requires doctor privileges).
+- **Delete**: Remove a patient from the system.
+
+### Appointment
+
+- **Create**: Schedule a new appointment (can only be created by a patient).
+- **List**: Retrieve a list of all appointments.
+- **View by Doctor**: Retrieve appointments for a specific doctor.
+- **View by Patient**: Retrieve appointments for a specific patient.
+- **View**: Retrieve details of a specific appointment by ID.
+- **Approve**: Approve an appointment (requires doctor privileges).
+- **Reject**: Reject an appointment (requires doctor privileges).
 
 ## Installation
 
+To set up and run the project, follow these steps:
+
+1. **Clone the repository**
+
 ```bash
-$ npm install
+   git clone https://github.com/furkanates07/hospital-management.git
+   cd hospital-management-system
 ```
 
-## Running the app
+2. **Install Project Dependencies**
+
+Install the required Node.js packages:
+
+```bash
+   npm install
+```
+
+3. **Configure Environment Variables**
+
+Create a .env file in the root directory of the project with the following content:
+
+```bash
+   DB_URI=mongodb://localhost:27017/hospital-db
+```
+
+4. **Start the Server**
+
+For development mode, run:
 
 ```bash
 # development
 $ npm run start
 
 # watch mode
-$ npm run start:dev
+$ npm run dev
 
 # production mode
 $ npm run start:prod
 ```
 
-## Test
+## Technologies Used
 
-```bash
-# unit tests
-$ npm run test
+- **NestJS**: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+- **TypeScript**: A strongly typed programming language that builds on JavaScript, providing better tooling at any scale.
+- **MongoDB**: A NoSQL database used for storing application data with flexibility and scalability.
+- **JWT (JSON Web Token)**: A compact, URL-safe means of representing claims to be transferred between two parties. Used for authentication and authorization.
+- **Docker**: A platform for developing, shipping, and running applications in containers to ensure consistency across different environments.
 
-# e2e tests
-$ npm run test:e2e
+## Examples
 
-# test coverage
-$ npm run test:cov
+### Patient Registration
+
+**Endpoint**: `POST http://localhost:3000/auth/patient-register`
+
+**Request Body**:
+
+```json
+{
+  "name": "Ali Veli",
+  "email": "ali.veli@example.com",
+  "password": "123456",
+  "role": "patient",
+  "phoneNumber": "1234567890",
+  "dateOfBirth": "1990-01-01T00:00:00.000Z",
+  "gender": "Male",
+  "address": "Örnek Mah. 123. Sok. No: 45",
+  "emergencyContact": null,
+  "medicalHistory": ["Diabetes", "Hypertension"],
+  "allergies": ["Penicillin"],
+  "chronicConditions": ["Asthma"]
+}
 ```
 
-## Support
+### Doctor Registration
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Endpoint**: `POST http://localhost:3000/auth/doctor-register`
 
-## Stay in touch
+**Description**: Registers a new doctor in the system. This endpoint is typically used by administrators to add new doctors.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Request Body**:
 
-## License
+```json
+{
+  "name": "Ayşe Yılmaz",
+  "email": "ayse.yilmaz@example.com",
+  "password": "securePassword123",
+  "specialty": "Urology",
+  "title": "Dr.",
+  "yearsOfExperience": 10
+}
+```
 
-Nest is [MIT licensed](LICENSE).
+### Update Patient Conditions
+
+**Endpoint**: `PATCH http://localhost:3000/patients/{patientId}/conditions`
+
+**Description**: Updates the medical conditions, allergies, and chronic conditions of a patient. This endpoint is accessible only to doctors.
+
+**Request Body**:
+
+```json
+{
+  "medicalHistory": ["Diabetes", "Hypertension"],
+  "allergies": ["Penicillin"],
+  "chronicConditions": ["Asthma"]
+}
+```
+
+You can place this section under the **API Endpoints** section or wherever it fits best in your README. This provides clear examples of how to interact with your API, including the structure of request payloads for different endpoints.
+
+## Images
+
+- Docker
+  ![Docker](/src/images/docker.png)
+- MongoDB
+  ![MongoDB](/src/images/mongoDB.png)
+- Postman
+  ![Postman](/src/images/postman.png)
+
+## Contributing
+
+Feel free to submit issues or pull requests if you find any bugs or want to add new features.
