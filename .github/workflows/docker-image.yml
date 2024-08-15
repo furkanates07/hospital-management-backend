@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  windows-release:
+  build:
 
     runs-on: ubuntu-latest
 
