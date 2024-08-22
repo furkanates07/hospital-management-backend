@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { Doctor, DoctorDocument } from 'src/doctors/schemas/doctor.schema';
 import { Patient, PatientDocument } from 'src/patients/schemas/patient.schema';
@@ -25,7 +26,11 @@ export class AuthService {
       throw new UnauthorizedException('No user found with this email.');
     }
 
-    if (user.password !== dto.password) {
+    const isPasswordMatching = await bcrypt.compare(
+      dto.password,
+      user.password,
+    );
+    if (!isPasswordMatching) {
       throw new UnauthorizedException('Incorrect password.');
     }
 

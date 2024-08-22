@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import {
   CreatePatientDto,
@@ -11,6 +12,7 @@ import {
   UpdatePatientDetailsDto,
 } from './dto';
 import { Patient, PatientDocument } from './schemas/patient.schema';
+
 @Injectable()
 export class PatientsService {
   constructor(
@@ -18,6 +20,14 @@ export class PatientsService {
   ) {}
 
   async create(createPatientDto: CreatePatientDto): Promise<Patient> {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(
+      createPatientDto.password,
+      saltRounds,
+    );
+
+    createPatientDto.password = hashedPassword;
+
     const patient = new this.patientModel(createPatientDto);
     return patient.save();
   }
