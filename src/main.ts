@@ -9,6 +9,12 @@ async function bootstrap() {
   await mongoose.connect(dbURI, { useUnifiedTopology: true } as ConnectOptions);
   console.log('MongoDB connection successful!');
 
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
+  });
+
   await app.listen(3000);
   console.log('NestJS application is running on port 3000!');
 }
