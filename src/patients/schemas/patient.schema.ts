@@ -17,8 +17,8 @@ export class Patient extends Document {
   @Prop({ type: String, enum: Role, default: Role.PATIENT })
   role: Role;
 
-  @Prop({ required: false })
-  phoneNumber?: string;
+  @Prop({ required: true, unique: true })
+  phoneNumber: string;
 
   @Prop({ required: false })
   dateOfBirth?: Date;

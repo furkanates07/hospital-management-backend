@@ -28,7 +28,7 @@ export class CreatePatientDto {
 
   @IsNotEmpty()
   @IsPhoneNumber()
-  phoneNumber?: string;
+  phoneNumber: string;
 
   @IsNotEmpty()
   @IsDate()
