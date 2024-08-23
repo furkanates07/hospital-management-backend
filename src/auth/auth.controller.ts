@@ -15,7 +15,7 @@ export class AuthController {
   ) {}
 
   @Post('patient-register')
-  async register(@Body() dto: CreatePatientDto) {
+  async registerPatient(@Body() dto: CreatePatientDto) {
     return this.patientsService.create(dto);
   }
 
@@ -24,8 +24,13 @@ export class AuthController {
     return this.doctorsService.create(dto);
   }
 
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  @Post('patient-login')
+  async loginPatient(@Body() dto: LoginDto) {
+    return this.authService.loginPatient(dto);
+  }
+
+  @Post('doctor-login')
+  async loginDoctor(@Body() dto: LoginDto) {
+    return this.authService.loginDoctor(dto);
   }
 }

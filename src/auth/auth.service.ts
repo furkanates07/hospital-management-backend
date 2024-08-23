@@ -15,26 +15,42 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(dto: LoginDto): Promise<{ access_token: string }> {
-    let user = await this.patientModel.findOne({ email: dto.email });
+  async loginPatient(dto: LoginDto): Promise<{ access_token: string }> {
+    const patient = await this.patientModel.findOne({ email: dto.email });
 
-    if (!user) {
-      user = await this.doctorModel.findOne({ email: dto.email });
-    }
-
-    if (!user) {
-      throw new UnauthorizedException('No user found with this email.');
+    if (!patient) {
+      throw new UnauthorizedException('No patient found with this email.');
     }
 
     const isPasswordMatching = await bcrypt.compare(
       dto.password,
-      user.password,
+      patient.password,
     );
     if (!isPasswordMatching) {
       throw new UnauthorizedException('Incorrect password.');
     }
 
-    const payload = { email: user.email, role: user.role };
+    const payload = { email: patient.email, role: 'PATIENT' };
+    const token = this.jwtService.sign(payload);
+    return { access_token: token };
+  }
+
+  async loginDoctor(dto: LoginDto): Promise<{ access_token: string }> {
+    const doctor = await this.doctorModel.findOne({ email: dto.email });
+
+    if (!doctor) {
+      throw new UnauthorizedException('No doctor found with this email.');
+    }
+
+    const isPasswordMatching = await bcrypt.compare(
+      dto.password,
+      doctor.password,
+    );
+    if (!isPasswordMatching) {
+      throw new UnauthorizedException('Incorrect password.');
+    }
+
+    const payload = { email: doctor.email, role: 'DOCTOR' };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
   }
