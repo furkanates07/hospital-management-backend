@@ -29,8 +29,8 @@ export class Patient extends Document {
   @Prop({ required: false })
   address?: string;
 
-  @Prop({ type: EmergencyContact, required: false })
-  emergencyContact?: EmergencyContact;
+  @Prop({ type: [EmergencyContact], required: false })
+  emergencyContact?: EmergencyContact[];
 
   @Prop({ type: [String], required: false })
   medicalHistory?: string[];

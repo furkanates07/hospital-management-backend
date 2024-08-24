@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
@@ -6,6 +7,7 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { Role } from '../../users/enums/role';
 import { EmergencyContact } from '../schemas/emergency-contact.schema';
@@ -38,13 +40,14 @@ export class CreatePatientDto {
   @IsString()
   gender: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   address: string;
 
   @IsOptional()
-  @IsNotEmpty()
-  emergencyContact?: EmergencyContact;
+  @ValidateNested({ each: true })
+  @Type(() => EmergencyContact)
+  emergencyContact?: EmergencyContact[];
 
   @IsOptional()
   @IsString({ each: true })
