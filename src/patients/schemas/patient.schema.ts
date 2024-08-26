@@ -23,10 +23,10 @@ export class Patient extends Document {
   @Prop({ required: false })
   dateOfBirth?: Date;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   gender?: string;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   address?: string;
 
   @Prop({ type: [EmergencyContact], required: false })
