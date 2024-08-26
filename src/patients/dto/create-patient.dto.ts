@@ -34,6 +34,7 @@ export class CreatePatientDto {
 
   @IsNotEmpty()
   @IsDate()
+  @Type(() => Date)
   dateOfBirth: Date;
 
   @IsNotEmpty()
