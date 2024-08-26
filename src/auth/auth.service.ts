@@ -30,7 +30,11 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect password.');
     }
 
-    const payload = { email: patient.email, role: 'PATIENT' };
+    const payload = {
+      email: patient.email,
+      role: 'PATIENT',
+      userId: patient._id.toString(),
+    };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
   }
@@ -50,7 +54,11 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect password.');
     }
 
-    const payload = { email: doctor.email, role: 'DOCTOR' };
+    const payload = {
+      email: doctor.email,
+      role: 'DOCTOR',
+      userId: doctor._id.toString(),
+    };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
   }
