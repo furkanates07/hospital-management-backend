@@ -35,7 +35,6 @@ export class AuthService {
     const payload = {
       email: patient.email,
       role: 'PATIENT',
-      userId: patient._id.toString(),
     };
     const token = this.jwtService.sign(payload);
 
@@ -65,7 +64,6 @@ export class AuthService {
     const payload = {
       email: doctor.email,
       role: 'DOCTOR',
-      userId: doctor._id.toString(),
     };
     const token = this.jwtService.sign(payload);
     return {
