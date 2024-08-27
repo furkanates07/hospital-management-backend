@@ -15,7 +15,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async loginPatient(dto: LoginDto): Promise<{ access_token: string }> {
+  async loginPatient(
+    dto: LoginDto,
+  ): Promise<{ access_token: string; userId: string }> {
     const patient = await this.patientModel.findOne({ email: dto.email });
 
     if (!patient) {
@@ -36,10 +38,16 @@ export class AuthService {
       userId: patient._id.toString(),
     };
     const token = this.jwtService.sign(payload);
-    return { access_token: token };
+
+    return {
+      access_token: token,
+      userId: patient._id.toString(),
+    };
   }
 
-  async loginDoctor(dto: LoginDto): Promise<{ access_token: string }> {
+  async loginDoctor(
+    dto: LoginDto,
+  ): Promise<{ access_token: string; userId: string }> {
     const doctor = await this.doctorModel.findOne({ email: dto.email });
 
     if (!doctor) {
@@ -60,6 +68,9 @@ export class AuthService {
       userId: doctor._id.toString(),
     };
     const token = this.jwtService.sign(payload);
-    return { access_token: token };
+    return {
+      access_token: token,
+      userId: doctor._id.toString(),
+    };
   }
 }
