@@ -5,8 +5,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -34,16 +34,18 @@ export class DoctorsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async findAll(): Promise<Doctor[]> {
     return this.doctorsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: string): Promise<Doctor> {
     return this.doctorsService.findById(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
@@ -51,8 +53,11 @@ export class DoctorsController {
     @Req() req: any,
   ): Promise<Doctor> {
     const doctor = await this.doctorsService.findById(id);
+    if (!doctor) {
+      throw new BadRequestException('Doctor not found');
+    }
 
-    if (doctor.email !== req.user.email) {
+    if (req.user.role !== Role.ADMIN) {
       throw new BadRequestException(
         "You are not authorized to update this doctor's details",
       );
