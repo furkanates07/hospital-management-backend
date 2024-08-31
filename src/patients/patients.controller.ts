@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -40,8 +39,7 @@ export class PatientsController {
     return this.patientsService.findById(id);
   }
 
-  @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updatePatientDto: UpdatePatientDetailsDto,
