@@ -1,4 +1,4 @@
-export enum Specialty {
+export enum Speciality {
   CARDIOLOGY = 'Cardiology',
   NEUROLOGY = 'Neurology',
   ORTHOPEDICS = 'Orthopedics',

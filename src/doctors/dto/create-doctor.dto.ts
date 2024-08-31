@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Role } from '../../users/enums/role';
-import { Specialty, Title } from '../enums';
+import { Speciality, Title } from '../enums';
 
 export class CreateDoctorDto {
   @IsNotEmpty()
@@ -21,13 +21,16 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
-  @IsEnum(Specialty)
-  specialty: Specialty;
+  @IsEnum(Speciality)
+  @IsNotEmpty()
+  specialty: Speciality;
 
   @IsEnum(Title)
+  @IsNotEmpty()
   title: Title;
 
   @IsNumber()
+  @IsNotEmpty()
   yearsOfExperience: number;
 
   @IsEnum(Role)
