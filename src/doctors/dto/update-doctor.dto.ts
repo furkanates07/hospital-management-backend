@@ -5,7 +5,7 @@ import { Speciality, Title } from '../enums';
 export class UpdateDoctorDto {
   @IsOptional()
   @IsEnum(Speciality)
-  specialty?: Speciality;
+  speciality?: Speciality;
 
   @IsOptional()
   @IsEnum(Title)

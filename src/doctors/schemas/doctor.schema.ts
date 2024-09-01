@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from '../../users/enums/role';
-import { Specialty, Title } from '../enums';
+import { Speciality, Title } from '../enums';
 
 @Schema()
 export class Doctor extends Document {
@@ -18,7 +18,7 @@ export class Doctor extends Document {
   role: Role;
 
   @Prop({ required: true })
-  specialty: Specialty;
+  speciality: Speciality;
 
   @Prop({ required: true, enum: Title })
   title: Title;

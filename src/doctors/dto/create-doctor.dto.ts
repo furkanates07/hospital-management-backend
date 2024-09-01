@@ -23,7 +23,7 @@ export class CreateDoctorDto {
 
   @IsEnum(Speciality)
   @IsNotEmpty()
-  specialty: Speciality;
+  speciality: Speciality;
 
   @IsEnum(Title)
   @IsNotEmpty()
