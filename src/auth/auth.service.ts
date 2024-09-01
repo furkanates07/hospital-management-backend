@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { Doctor, DoctorDocument } from 'src/doctors/schemas/doctor.schema';
 import { Patient, PatientDocument } from 'src/patients/schemas/patient.schema';
+import { Role } from 'src/users/enums/role';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
@@ -34,7 +35,7 @@ export class AuthService {
 
     const payload = {
       email: patient.email,
-      role: 'PATIENT',
+      role: Role.PATIENT,
     };
     const token = this.jwtService.sign(payload);
 
@@ -63,7 +64,7 @@ export class AuthService {
 
     const payload = {
       email: doctor.email,
-      role: 'DOCTOR',
+      role: Role.DOCTOR,
     };
     const token = this.jwtService.sign(payload);
     return {
