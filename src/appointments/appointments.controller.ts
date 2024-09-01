@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -11,7 +12,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../users/enums/role';
 import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CreateAppointmentDto, UpdatePrescriptionDto } from './dto';
 import { Appointment } from './schemas/appointment.schema';
 
 @Controller('appointments')
@@ -85,5 +86,22 @@ export class AppointmentsController {
       throw new BadRequestException('Only doctors can reject appointments.');
     }
     return this.appointmentsService.rejectAppointment(appointmentId);
+  }
+  @Patch(':appointmentId/prescription')
+  @UseGuards(JwtAuthGuard)
+  async updatePrescription(
+    @Param('appointmentId') appointmentId: string,
+    @Body() updatePrescriptionDto: UpdatePrescriptionDto,
+    @Req() req: any,
+  ): Promise<Appointment> {
+    const user = req.user;
+    if (user.role !== Role.DOCTOR) {
+      throw new BadRequestException('Only doctors can update prescriptions.');
+    }
+
+    return this.appointmentsService.updatePrescription(
+      appointmentId,
+      updatePrescriptionDto,
+    );
   }
 }

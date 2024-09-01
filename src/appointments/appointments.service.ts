@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Doctor } from '../doctors/schemas/doctor.schema';
-import { Patient } from '../patients/schemas/patient.schema';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { Doctor, DoctorDocument } from '../doctors/schemas/doctor.schema';
+import { Patient, PatientDocument } from '../patients/schemas/patient.schema';
+import { CreateAppointmentDto, UpdatePrescriptionDto } from './dto';
 import { Status } from './enums';
 import { Appointment, AppointmentDocument } from './schemas/appointment.schema';
 
@@ -17,9 +17,9 @@ export class AppointmentsService {
     @InjectModel(Appointment.name)
     private appointmentModel: Model<AppointmentDocument>,
     @InjectModel(Doctor.name)
-    private doctorModel: Model<Doctor>,
+    private doctorModel: Model<DoctorDocument>,
     @InjectModel(Patient.name)
-    private patientModel: Model<Patient>,
+    private patientModel: Model<PatientDocument>,
   ) {}
 
   async createAppointment(
@@ -109,6 +109,26 @@ export class AppointmentsService {
     const appointment = await this.appointmentModel.findByIdAndUpdate(
       appointmentId,
       { status: Status.REJECTED },
+      { new: true },
+    );
+
+    if (!appointment) {
+      throw new NotFoundException(
+        `Appointment with ID ${appointmentId} not found`,
+      );
+    }
+
+    return appointment;
+  }
+
+  async updatePrescription(
+    appointmentId: string,
+    updatePrescriptionDto: UpdatePrescriptionDto,
+  ): Promise<Appointment> {
+    const { prescription } = updatePrescriptionDto;
+    const appointment = await this.appointmentModel.findByIdAndUpdate(
+      appointmentId,
+      { prescription },
       { new: true },
     );
 

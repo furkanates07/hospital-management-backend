@@ -15,6 +15,12 @@ export class Appointment extends Document {
 
   @Prop({ required: true, enum: Status, default: Status.PENDING })
   status: Status;
+
+  @Prop({ required: true })
+  reason: string;
+
+  @Prop({ required: false })
+  prescription?: string;
 }
 
 export type AppointmentDocument = Appointment & Document;
