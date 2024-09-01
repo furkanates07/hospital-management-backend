@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -40,20 +42,42 @@ export class PatientsController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updatePatientDto: UpdatePatientDetailsDto,
     @Req() req: any,
   ): Promise<Patient> {
-    const patient = await this.patientsService.findById(id);
+    try {
+      const patient = await this.patientsService.findById(id);
 
-    if (patient.email !== req.user.email) {
-      throw new BadRequestException(
-        "You are not authorized to update this patient's details",
+      console.log('patient:', patient);
+
+      if (!patient) {
+        throw new NotFoundException(`Patient with ID ${id} not found`);
+      }
+
+      console.log('req', req);
+
+      if (patient.email !== req.user.email) {
+        throw new BadRequestException(
+          "You are not authorized to update this patient's details",
+        );
+      }
+
+      return await this.patientsService.updateDetails(id, updatePatientDto);
+    } catch (error) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      console.error('An unexpected error occurred:', error);
+      throw new InternalServerErrorException(
+        'Failed to update patient details',
       );
     }
-
-    return this.patientsService.updateDetails(id, updatePatientDto);
   }
 
   @Patch(':patientId/conditions')
