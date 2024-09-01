@@ -87,6 +87,20 @@ export class AppointmentsController {
     }
     return this.appointmentsService.rejectAppointment(appointmentId);
   }
+
+  @Post(':appointmentId/cancel')
+  @UseGuards(JwtAuthGuard)
+  async cancelAppointment(
+    @Param('appointmentId') appointmentId: string,
+    @Req() req: any,
+  ): Promise<Appointment> {
+    const user = req.user;
+    if (user.role !== Role.PATIENT) {
+      throw new BadRequestException('Only patients can cancel appointments.');
+    }
+    return this.appointmentsService.cancelAppointment(appointmentId);
+  }
+
   @Patch(':appointmentId/prescription')
   @UseGuards(JwtAuthGuard)
   async updatePrescription(

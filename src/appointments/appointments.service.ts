@@ -121,6 +121,22 @@ export class AppointmentsService {
     return appointment;
   }
 
+  async cancelAppointment(appointmentId: string): Promise<Appointment> {
+    const appointment = await this.appointmentModel.findByIdAndUpdate(
+      appointmentId,
+      { status: Status.CANCELED },
+      { new: true },
+    );
+
+    if (!appointment) {
+      throw new NotFoundException(
+        `Appointment with ID ${appointmentId} not found`,
+      );
+    }
+
+    return appointment;
+  }
+
   async updatePrescription(
     appointmentId: string,
     updatePrescriptionDto: UpdatePrescriptionDto,
