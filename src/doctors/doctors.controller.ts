@@ -40,7 +40,6 @@ export class DoctorsController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: string): Promise<Doctor> {
     return this.doctorsService.findById(id);
   }
