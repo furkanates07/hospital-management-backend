@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -27,21 +28,51 @@ export class DoctorsController {
     @Body() createDoctorDto: CreateDoctorDto,
     @Req() req: any,
   ): Promise<Doctor> {
-    if (req.user.role !== Role.ADMIN) {
-      throw new BadRequestException('Only admins can create doctors.');
+    try {
+      if (req.user.role !== Role.ADMIN) {
+        throw new BadRequestException('Only admins can create doctors.');
+      }
+      return await this.doctorsService.create(createDoctorDto);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred during doctor creation:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to create doctor');
     }
-    return this.doctorsService.create(createDoctorDto);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async findAll(): Promise<Doctor[]> {
-    return this.doctorsService.findAll();
+    try {
+      return await this.doctorsService.findAll();
+    } catch (error) {
+      console.error(
+        'An unexpected error occurred while retrieving doctors:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to retrieve doctors');
+    }
   }
 
   @Get(':id')
   async findById(@Param('id') id: string): Promise<Doctor> {
-    return this.doctorsService.findById(id);
+    try {
+      return await this.doctorsService.findById(id);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred while retrieving doctor:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to retrieve doctor');
+    }
   }
 
   @Patch(':id')
@@ -51,26 +82,48 @@ export class DoctorsController {
     @Body() updateDoctorDto: UpdateDoctorDto,
     @Req() req: any,
   ): Promise<Doctor> {
-    const doctor = await this.doctorsService.findById(id);
-    if (!doctor) {
-      throw new BadRequestException('Doctor not found');
-    }
+    try {
+      const doctor = await this.doctorsService.findById(id);
+      if (!doctor) {
+        throw new BadRequestException('Doctor not found');
+      }
 
-    if (req.user.role !== Role.ADMIN) {
-      throw new BadRequestException(
-        "You are not authorized to update this doctor's details",
+      if (req.user.role !== Role.ADMIN) {
+        throw new BadRequestException(
+          "You are not authorized to update this doctor's details",
+        );
+      }
+
+      return await this.doctorsService.update(id, updateDoctorDto);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred while updating doctor details:',
+        error,
       );
+      throw new InternalServerErrorException('Failed to update doctor');
     }
-
-    return this.doctorsService.update(id, updateDoctorDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string, @Req() req: any): Promise<Doctor> {
-    if (req.user.role !== Role.ADMIN) {
-      throw new BadRequestException('Only admins can delete doctors.');
+    try {
+      if (req.user.role !== Role.ADMIN) {
+        throw new BadRequestException('Only admins can delete doctors.');
+      }
+      return await this.doctorsService.remove(id);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred while deleting doctor:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to delete doctor');
     }
-    return this.doctorsService.remove(id);
   }
 }

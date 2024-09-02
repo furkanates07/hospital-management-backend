@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -25,17 +26,29 @@ export class AppointmentsController {
     @Body() createAppointmentDto: CreateAppointmentDto,
     @Req() req: any,
   ): Promise<Appointment> {
-    const user = req.user;
-    if (user.role !== Role.PATIENT) {
-      throw new BadRequestException('Only patients can create appointments.');
+    try {
+      const user = req.user;
+      if (user.role !== Role.PATIENT) {
+        throw new BadRequestException('Only patients can create appointments.');
+      }
+      return await this.appointmentsService.createAppointment(
+        createAppointmentDto,
+      );
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      throw new InternalServerErrorException('Failed to create appointment');
     }
-    return this.appointmentsService.createAppointment(createAppointmentDto);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAllAppointments(): Promise<Appointment[]> {
-    return this.appointmentsService.getAllAppointments();
+    try {
+      return await this.appointmentsService.getAllAppointments();
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      throw new InternalServerErrorException('Failed to fetch appointments');
+    }
   }
 
   @Get('doctor/:doctorId')
@@ -43,7 +56,14 @@ export class AppointmentsController {
   async getAppointmentsByDoctorId(
     @Param('doctorId') doctorId: string,
   ): Promise<Appointment[]> {
-    return this.appointmentsService.getAppointmentsByDoctorId(doctorId);
+    try {
+      return await this.appointmentsService.getAppointmentsByDoctorId(doctorId);
+    } catch (error) {
+      console.error('Error fetching appointments by doctor ID:', error);
+      throw new InternalServerErrorException(
+        'Failed to fetch appointments by doctor ID',
+      );
+    }
   }
 
   @Get('patient/:patientId')
@@ -51,7 +71,16 @@ export class AppointmentsController {
   async getAppointmentsByPatientId(
     @Param('patientId') patientId: string,
   ): Promise<Appointment[]> {
-    return this.appointmentsService.getAppointmentsByPatientId(patientId);
+    try {
+      return await this.appointmentsService.getAppointmentsByPatientId(
+        patientId,
+      );
+    } catch (error) {
+      console.error('Error fetching appointments by patient ID:', error);
+      throw new InternalServerErrorException(
+        'Failed to fetch appointments by patient ID',
+      );
+    }
   }
 
   @Get(':appointmentId')
@@ -59,7 +88,14 @@ export class AppointmentsController {
   async getAppointmentById(
     @Param('appointmentId') appointmentId: string,
   ): Promise<Appointment> {
-    return this.appointmentsService.getAppointmentById(appointmentId);
+    try {
+      return await this.appointmentsService.getAppointmentById(appointmentId);
+    } catch (error) {
+      console.error('Error fetching appointment by ID:', error);
+      throw new InternalServerErrorException(
+        'Failed to fetch appointment by ID',
+      );
+    }
   }
 
   @Post(':appointmentId/approve')
@@ -68,11 +104,16 @@ export class AppointmentsController {
     @Param('appointmentId') appointmentId: string,
     @Req() req: any,
   ): Promise<Appointment> {
-    const user = req.user;
-    if (user.role !== Role.DOCTOR) {
-      throw new BadRequestException('Only doctors can approve appointments.');
+    try {
+      const user = req.user;
+      if (user.role !== Role.DOCTOR) {
+        throw new BadRequestException('Only doctors can approve appointments.');
+      }
+      return await this.appointmentsService.approveAppointment(appointmentId);
+    } catch (error) {
+      console.error('Error approving appointment:', error);
+      throw new InternalServerErrorException('Failed to approve appointment');
     }
-    return this.appointmentsService.approveAppointment(appointmentId);
   }
 
   @Post(':appointmentId/reject')
@@ -81,11 +122,16 @@ export class AppointmentsController {
     @Param('appointmentId') appointmentId: string,
     @Req() req: any,
   ): Promise<Appointment> {
-    const user = req.user;
-    if (user.role !== Role.DOCTOR) {
-      throw new BadRequestException('Only doctors can reject appointments.');
+    try {
+      const user = req.user;
+      if (user.role !== Role.DOCTOR) {
+        throw new BadRequestException('Only doctors can reject appointments.');
+      }
+      return await this.appointmentsService.rejectAppointment(appointmentId);
+    } catch (error) {
+      console.error('Error rejecting appointment:', error);
+      throw new InternalServerErrorException('Failed to reject appointment');
     }
-    return this.appointmentsService.rejectAppointment(appointmentId);
   }
 
   @Post(':appointmentId/cancel')
@@ -94,11 +140,16 @@ export class AppointmentsController {
     @Param('appointmentId') appointmentId: string,
     @Req() req: any,
   ): Promise<Appointment> {
-    const user = req.user;
-    if (user.role !== Role.PATIENT) {
-      throw new BadRequestException('Only patients can cancel appointments.');
+    try {
+      const user = req.user;
+      if (user.role !== Role.PATIENT) {
+        throw new BadRequestException('Only patients can cancel appointments.');
+      }
+      return await this.appointmentsService.cancelAppointment(appointmentId);
+    } catch (error) {
+      console.error('Error canceling appointment:', error);
+      throw new InternalServerErrorException('Failed to cancel appointment');
     }
-    return this.appointmentsService.cancelAppointment(appointmentId);
   }
 
   @Patch(':appointmentId/prescription')
@@ -108,14 +159,18 @@ export class AppointmentsController {
     @Body() updatePrescriptionDto: UpdatePrescriptionDto,
     @Req() req: any,
   ): Promise<Appointment> {
-    const user = req.user;
-    if (user.role !== Role.DOCTOR) {
-      throw new BadRequestException('Only doctors can update prescriptions.');
+    try {
+      const user = req.user;
+      if (user.role !== Role.DOCTOR) {
+        throw new BadRequestException('Only doctors can update prescriptions.');
+      }
+      return await this.appointmentsService.updatePrescription(
+        appointmentId,
+        updatePrescriptionDto,
+      );
+    } catch (error) {
+      console.error('Error updating prescription:', error);
+      throw new InternalServerErrorException('Failed to update prescription');
     }
-
-    return this.appointmentsService.updatePrescription(
-      appointmentId,
-      updatePrescriptionDto,
-    );
   }
 }
