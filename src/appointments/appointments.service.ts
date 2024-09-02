@@ -25,7 +25,7 @@ export class AppointmentsService {
   async createAppointment(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
-    const { patientId, doctorId, appointmentDate } = createAppointmentDto;
+    const { patientId, doctorId, slot } = createAppointmentDto;
 
     const doctor = await this.doctorModel.findById(doctorId).exec();
     if (!doctor) {
@@ -40,7 +40,7 @@ export class AppointmentsService {
     const existingAppointment = await this.appointmentModel
       .findOne({
         doctorId,
-        appointmentDate,
+        slot,
       })
       .exec();
 

@@ -1,9 +1,11 @@
+import { Type } from 'class-transformer';
 import {
-  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { Slot } from '../schemas/slot.schema';
 
 export class CreateAppointmentDto {
   @IsString()
@@ -14,9 +16,10 @@ export class CreateAppointmentDto {
   @IsNotEmpty()
   doctorId: string;
 
-  @IsDateString()
   @IsNotEmpty()
-  appointmentDate: Date;
+  @ValidateNested({ each: true })
+  @Type(() => Slot)
+  slot: Slot;
 
   @IsString()
   @IsNotEmpty()
