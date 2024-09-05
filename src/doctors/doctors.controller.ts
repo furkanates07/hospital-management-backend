@@ -15,6 +15,7 @@ import { Role } from 'src/users/enums/role';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DoctorsService } from './doctors.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
+import { CreateDoctorsDto } from './dto/create-doctors.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { Doctor } from './schemas/doctor.schema';
 
@@ -42,6 +43,34 @@ export class DoctorsController {
         error,
       );
       throw new InternalServerErrorException('Failed to create doctor');
+    }
+  }
+
+  @Post('bulk')
+  @UseGuards(JwtAuthGuard)
+  async createBulk(
+    @Body() createDoctorsDto: CreateDoctorsDto,
+    @Req() req: any,
+  ): Promise<Doctor[]> {
+    try {
+      if (req.user.role !== Role.ADMIN) {
+        throw new BadRequestException('Only admins can create doctors.');
+      }
+      const doctors = createDoctorsDto.doctors;
+      const createdDoctors = [];
+      for (const doctor of doctors) {
+        createdDoctors.push(await this.doctorsService.create(doctor));
+      }
+      return createdDoctors;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred during doctor creation:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to create doctors');
     }
   }
 
