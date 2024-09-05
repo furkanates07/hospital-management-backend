@@ -10,6 +10,7 @@ import { Patient, PatientDocument } from '../patients/schemas/patient.schema';
 import { CreateAppointmentDto, UpdatePrescriptionDto } from './dto';
 import { Status } from './enums';
 import { Appointment, AppointmentDocument } from './schemas/appointment.schema';
+import { isValidHour, isWeekday } from './validators';
 
 @Injectable()
 export class AppointmentsService {
@@ -37,10 +38,23 @@ export class AppointmentsService {
       throw new NotFoundException(`Patient with ID ${patientId} not found`);
     }
 
+    if (!isWeekday(slot.date)) {
+      throw new BadRequestException(
+        'Appointments can only be scheduled on weekdays.',
+      );
+    }
+
+    if (!isValidHour(slot.hour)) {
+      throw new BadRequestException(
+        'Appointments can only be scheduled between 09:00 and 17:00.',
+      );
+    }
+
     const existingAppointment = await this.appointmentModel
       .findOne({
         doctorId,
-        slot,
+        'slot.date': slot.date,
+        'slot.hour': slot.hour,
       })
       .exec();
 

@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Days, Hours } from '../enums';
+import { Hours } from '../enums';
 
 @Schema()
 export class Slot {
   @Prop({ required: true })
-  day: Days;
+  date: Date;
 
   @Prop({ required: true })
   hour: Hours;
