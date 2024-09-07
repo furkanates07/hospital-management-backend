@@ -17,6 +17,7 @@ import { DoctorsService } from './doctors.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { CreateDoctorsDto } from './dto/create-doctors.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { Speciality } from './enums';
 import { Doctor } from './schemas/doctor.schema';
 
 @Controller('doctors')
@@ -101,6 +102,23 @@ export class DoctorsController {
         error,
       );
       throw new InternalServerErrorException('Failed to retrieve doctor');
+    }
+  }
+
+  @Get('speciality/:speciality')
+  async findBySpeciality(
+    @Param('speciality') speciality: Speciality,
+  ): Promise<Doctor[]> {
+    try {
+      return await this.doctorsService.findBySpeciality(speciality);
+    } catch (error) {
+      console.error(
+        'An unexpected error occurred while retrieving doctors by speciality:',
+        error,
+      );
+      throw new InternalServerErrorException(
+        'Failed to retrieve doctors by speciality',
+      );
     }
   }
 

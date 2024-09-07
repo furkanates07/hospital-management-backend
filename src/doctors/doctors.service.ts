@@ -32,6 +32,10 @@ export class DoctorsService {
     return doctor;
   }
 
+  async findBySpeciality(speciality: string): Promise<Doctor[]> {
+    return this.doctorModel.find({ speciality }).exec();
+  }
+
   async update(id: string, updateDoctorDto: UpdateDoctorDto): Promise<Doctor> {
     const updatedDoctor = await this.doctorModel.findByIdAndUpdate(
       id,
