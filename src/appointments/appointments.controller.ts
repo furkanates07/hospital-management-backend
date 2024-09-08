@@ -129,6 +129,31 @@ export class AppointmentsController {
     }
   }
 
+  @Get('appointmentId/:patientId/:doctorId')
+  @UseGuards(JwtAuthGuard)
+  async getAppointmentIdByPatientIdAndDoctorId(
+    @Param('patientId') patientId: string,
+    @Param('doctorId') doctorId: string,
+  ): Promise<string> {
+    try {
+      return await this.appointmentsService.getAppointmentIdByPatientIdAndDoctorId(
+        patientId,
+        doctorId,
+      );
+    } catch (error) {
+      console.error('Error fetching appointment object ID:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        'Failed to fetch appointment object ID',
+      );
+    }
+  }
+
   @Post(':appointmentId/approve')
   @UseGuards(JwtAuthGuard)
   async approveAppointment(
