@@ -105,6 +105,21 @@ export class DoctorsController {
     }
   }
 
+  @Get('email/:email')
+  async getDoctorByEmail(@Param('email') email: string): Promise<Doctor> {
+    try {
+      return await this.doctorsService.getDoctorByEmail(email);
+    } catch (error) {
+      console.error(
+        'An unexpected error occurred while retrieving doctor ID by email:',
+        error,
+      );
+      throw new InternalServerErrorException(
+        'Failed to retrieve doctor ID by email',
+      );
+    }
+  }
+
   @Get('speciality/:speciality')
   async findBySpeciality(
     @Param('speciality') speciality: Speciality,

@@ -32,6 +32,16 @@ export class DoctorsService {
     return doctor;
   }
 
+  async getDoctorByEmail(email: string): Promise<Doctor> {
+    const doctor = await this.doctorModel.findOne({ email }).exec();
+
+    if (!doctor) {
+      throw new NotFoundException(`Doctor with email ${email} not found`);
+    }
+
+    return doctor;
+  }
+
   async findBySpeciality(speciality: string): Promise<Doctor[]> {
     return this.doctorModel.find({ speciality }).exec();
   }
