@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -36,6 +37,12 @@ export class AppointmentsController {
       );
     } catch (error) {
       console.error('Error creating appointment:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to create appointment');
     }
   }
@@ -47,6 +54,12 @@ export class AppointmentsController {
       return await this.appointmentsService.getAllAppointments();
     } catch (error) {
       console.error('Error fetching appointments:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to fetch appointments');
     }
   }
@@ -60,6 +73,12 @@ export class AppointmentsController {
       return await this.appointmentsService.getAppointmentsByDoctorId(doctorId);
     } catch (error) {
       console.error('Error fetching appointments by doctor ID:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException(
         'Failed to fetch appointments by doctor ID',
       );
@@ -77,6 +96,12 @@ export class AppointmentsController {
       );
     } catch (error) {
       console.error('Error fetching appointments by patient ID:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException(
         'Failed to fetch appointments by patient ID',
       );
@@ -92,6 +117,12 @@ export class AppointmentsController {
       return await this.appointmentsService.getAppointmentById(appointmentId);
     } catch (error) {
       console.error('Error fetching appointment by ID:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException(
         'Failed to fetch appointment by ID',
       );
@@ -112,6 +143,12 @@ export class AppointmentsController {
       return await this.appointmentsService.approveAppointment(appointmentId);
     } catch (error) {
       console.error('Error approving appointment:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to approve appointment');
     }
   }
@@ -130,6 +167,12 @@ export class AppointmentsController {
       return await this.appointmentsService.rejectAppointment(appointmentId);
     } catch (error) {
       console.error('Error rejecting appointment:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to reject appointment');
     }
   }
@@ -148,6 +191,12 @@ export class AppointmentsController {
       return await this.appointmentsService.cancelAppointment(appointmentId);
     } catch (error) {
       console.error('Error canceling appointment:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to cancel appointment');
     }
   }
@@ -168,6 +217,12 @@ export class AppointmentsController {
       return await this.appointmentsService.completeAppointment(appointmentId);
     } catch (error) {
       console.error('Error completing appointment:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to complete appointment');
     }
   }
@@ -190,6 +245,12 @@ export class AppointmentsController {
       );
     } catch (error) {
       console.error('Error updating prescription:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException('Failed to update prescription');
     }
   }
