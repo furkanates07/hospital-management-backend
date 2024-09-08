@@ -105,6 +105,25 @@ export class AppointmentsService {
     return appointment;
   }
 
+  async getAppointmentIdByPatientIdAndDoctorId(
+    patientId: string,
+    doctorId: string,
+  ): Promise<string> {
+    const appointment = await this.appointmentModel
+      .findOne({
+        patientId,
+        doctorId,
+        status: { $in: [Status.PENDING, Status.APPROVED] },
+      })
+      .exec();
+    if (!appointment) {
+      throw new NotFoundException(
+        `Appointment not found for patient with ID ${patientId} and doctor with ID ${doctorId}`,
+      );
+    }
+    return appointment._id.toString();
+  }
+
   async approveAppointment(appointmentId: string): Promise<Appointment> {
     const appointment = await this.appointmentModel.findByIdAndUpdate(
       appointmentId,
