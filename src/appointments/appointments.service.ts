@@ -52,14 +52,16 @@ export class AppointmentsService {
 
     const existingAppointment = await this.appointmentModel
       .findOne({
+        patientId,
         doctorId,
-        'slot.date': slot.date,
-        'slot.hour': slot.hour,
+        status: { $in: [Status.PENDING, Status.APPROVED] },
       })
       .exec();
 
     if (existingAppointment) {
-      throw new BadRequestException('Doctor is not available at this time.');
+      throw new BadRequestException(
+        'You already have an appointment scheduled',
+      );
     }
 
     const appointment = new this.appointmentModel(createAppointmentDto);
