@@ -152,6 +152,26 @@ export class AppointmentsController {
     }
   }
 
+  @Post(':appointmentId/complete')
+  @UseGuards(JwtAuthGuard)
+  async completeAppointment(
+    @Param('appointmentId') appointmentId: string,
+    @Req() req: any,
+  ): Promise<Appointment> {
+    try {
+      const user = req.user;
+      if (user.role !== Role.DOCTOR) {
+        throw new BadRequestException(
+          'Only doctors can complete appointments.',
+        );
+      }
+      return await this.appointmentsService.completeAppointment(appointmentId);
+    } catch (error) {
+      console.error('Error completing appointment:', error);
+      throw new InternalServerErrorException('Failed to complete appointment');
+    }
+  }
+
   @Patch(':appointmentId/prescription')
   @UseGuards(JwtAuthGuard)
   async updatePrescription(
