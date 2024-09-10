@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,6 +15,7 @@ import {
 import { Role } from 'src/users/enums/role';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DoctorsService } from './doctors.service';
+import { ChangePasswordDto } from './dto';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { CreateDoctorsDto } from './dto/create-doctors.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
@@ -134,6 +136,39 @@ export class DoctorsController {
       throw new InternalServerErrorException(
         'Failed to retrieve doctors by speciality',
       );
+    }
+  }
+
+  @Patch(':id/change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Param('id') id: string,
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: any,
+  ): Promise<Doctor> {
+    try {
+      const doctor = await this.doctorsService.findById(id);
+
+      if (!doctor) {
+        throw new NotFoundException(`Patient with ID ${id} not found`);
+      }
+
+      if (doctor.email !== req.user.email) {
+        throw new BadRequestException(
+          "You are not authorized to change this patient's password",
+        );
+      }
+
+      return await this.doctorsService.changePassword(id, changePasswordDto);
+    } catch (error) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      console.error('An unexpected error occurred:', error);
+      throw new InternalServerErrorException('Failed to change password');
     }
   }
 
