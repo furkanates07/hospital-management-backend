@@ -20,13 +20,13 @@ export class Patient extends Document {
   @Prop({ required: true, unique: true })
   phoneNumber: string;
 
+  @Prop({ required: true })
+  dateOfBirth: Date;
+
+  @Prop({ required: true })
+  gender: string;
+
   @Prop({ required: false })
-  dateOfBirth?: Date;
-
-  @Prop({ required: true })
-  gender?: string;
-
-  @Prop({ required: true })
   address?: string;
 
   @Prop({ type: [EmergencyContact], required: false })
