@@ -4,6 +4,7 @@ import {
   Controller,
   InternalServerErrorException,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DoctorsService } from 'src/doctors/doctors.service';
 import { CreateDoctorDto } from 'src/doctors/dto';
@@ -45,7 +46,10 @@ export class AuthController {
     try {
       return await this.authService.loginPatient(dto);
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof UnauthorizedException
+      ) {
         throw error;
       }
       console.error('Error during patient login:', error);
@@ -58,7 +62,10 @@ export class AuthController {
     try {
       return await this.authService.loginDoctor(dto);
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof UnauthorizedException
+      ) {
         throw error;
       }
       console.error('Error during doctor login:', error);
