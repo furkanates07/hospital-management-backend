@@ -15,6 +15,7 @@ import {
 import { Role } from 'src/users/enums/role';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
+  ChangePasswordDto,
   CreatePatientDto,
   UpdatePatientConditionsDto,
   UpdatePatientDetailsDto,
@@ -62,6 +63,39 @@ export class PatientsController {
       }
       console.error('An unexpected error occurred:', error);
       throw new InternalServerErrorException('Failed to retrieve patient');
+    }
+  }
+
+  @Patch(':id/change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Param('id') id: string,
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: any,
+  ): Promise<Patient> {
+    try {
+      const patient = await this.patientsService.findById(id);
+
+      if (!patient) {
+        throw new NotFoundException(`Patient with ID ${id} not found`);
+      }
+
+      if (patient.email !== req.user.email) {
+        throw new BadRequestException(
+          "You are not authorized to change this patient's password",
+        );
+      }
+
+      return await this.patientsService.changePassword(id, changePasswordDto);
+    } catch (error) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      console.error('An unexpected error occurred:', error);
+      throw new InternalServerErrorException('Failed to change password');
     }
   }
 

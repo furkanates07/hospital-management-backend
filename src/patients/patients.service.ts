@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import {
+  ChangePasswordDto,
   CreatePatientDto,
   UpdatePatientConditionsDto,
   UpdatePatientDetailsDto,
@@ -69,6 +70,46 @@ export class PatientsService {
         error,
       );
       throw new InternalServerErrorException('Failed to retrieve patient');
+    }
+  }
+
+  async changePassword(
+    id: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<Patient> {
+    try {
+      const { oldPassword, newPassword } = changePasswordDto;
+
+      const patient = await this.patientModel.findById(id).exec();
+      if (!patient) {
+        throw new NotFoundException(`Patient with ID ${id} not found`);
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        oldPassword,
+        patient.password,
+      );
+      if (!isPasswordValid) {
+        throw new BadRequestException('Invalid old password');
+      }
+
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+      patient.password = hashedPassword;
+
+      return await patient.save();
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      console.error(
+        'An unexpected error occurred while changing patient password:',
+        error,
+      );
+      throw new InternalServerErrorException('Failed to change password');
     }
   }
 
