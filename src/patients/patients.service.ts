@@ -152,59 +152,16 @@ export class PatientsService {
       }
 
       if (updatePatientConditionsDto.medicalHistory) {
-        const newMedicalHistories =
-          updatePatientConditionsDto.medicalHistory.filter(
-            (history) => !patient.medicalHistory?.includes(history),
-          );
-
-        if (newMedicalHistories.length > 0) {
-          patient.medicalHistory = [
-            ...new Set([
-              ...(patient.medicalHistory || []),
-              ...newMedicalHistories,
-            ]),
-          ];
-        } else {
-          throw new BadRequestException(
-            'All provided medical histories already exist.',
-          );
-        }
+        patient.medicalHistory = updatePatientConditionsDto.medicalHistory;
       }
 
       if (updatePatientConditionsDto.allergies) {
-        const newAllergies = updatePatientConditionsDto.allergies.filter(
-          (allergy) => !patient.allergies?.includes(allergy),
-        );
-
-        if (newAllergies.length > 0) {
-          patient.allergies = [
-            ...new Set([...(patient.allergies || []), ...newAllergies]),
-          ];
-        } else {
-          throw new BadRequestException(
-            'All provided allergies already exist.',
-          );
-        }
+        patient.allergies = updatePatientConditionsDto.allergies;
       }
 
       if (updatePatientConditionsDto.chronicConditions) {
-        const newChronicConditions =
-          updatePatientConditionsDto.chronicConditions.filter(
-            (condition) => !patient.chronicConditions?.includes(condition),
-          );
-
-        if (newChronicConditions.length > 0) {
-          patient.chronicConditions = [
-            ...new Set([
-              ...(patient.chronicConditions || []),
-              ...newChronicConditions,
-            ]),
-          ];
-        } else {
-          throw new BadRequestException(
-            'All provided chronic conditions already exist.',
-          );
-        }
+        patient.chronicConditions =
+          updatePatientConditionsDto.chronicConditions;
       }
 
       return await patient.save();
