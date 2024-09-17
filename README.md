@@ -1,4 +1,4 @@
-# Hospital Managament Systems
+# Hospital Managament Systems Backend Services
 
 This project is a hospital management system developed using NestJS. It provides various functionalities for doctors, patients, appointments, and administrators, with security ensured through JWT-based authentication.
 
